@@ -1,13 +1,14 @@
 # Village Wise FPS Beneficiary Details Web App
 
-A static web app that loads FPS beneficiary details from Excel and presents them village wise. The current configured village is **Balapora**, loaded from `FPSBeneficiaryDetailsbalapora.xlsx`, and the app is structured so more village workbooks can be added later.
+A static web app that loads FPS beneficiary details from Excel and presents them village wise. The currently configured villages are **Balapora** and **GANOWPORA**, and the app is structured so more village workbooks can be added later.
 
 ## Project files
 
 - `index.html` - village-wise dashboard structure and script/style wiring
 - `style.css` - responsive village dashboard styling
 - `script.js` - village configuration, Excel parsing, metrics, filters, and table rendering
-- `FPSBeneficiaryDetailsbalapora.xlsx` - source data file loaded on page open
+- `FPSBeneficiaryDetailsbalapora.xlsx` - Balapora source data file
+- `FPSBeneficiaryDetailGANOWPORA.xlsx` - GANOWPORA source data file
 
 ## Adding another village
 

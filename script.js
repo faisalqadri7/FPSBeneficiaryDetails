@@ -9,6 +9,11 @@
       name: 'Balapora',
       file: 'FPSBeneficiaryDetailsbalapora.xlsx',
     },
+    {
+      id: 'ganowpora',
+      name: 'GANOWPORA',
+      file: 'FPSBeneficiaryDetailGANOWPORA.xlsx',
+    },
   ];
 
   const TABLE_COLUMNS = [
@@ -41,6 +46,7 @@
   const statusMessage = document.getElementById('statusMessage');
   const rowCount = document.getElementById('rowCount');
   const filterHint = document.getElementById('filterHint');
+  const copyButton = createCopyButton();
 
   let villages = [];
   let activeVillageId = VILLAGE_SOURCES[0].id;
@@ -103,6 +109,7 @@
       return [];
     }
 
+    const columns = getColumnIndexes(matrix[headerIndex]);
     const rows = [];
     let currentFps = '';
     let currentFpsCode = '';
@@ -139,28 +146,30 @@
         return;
       }
 
-      if (!/^\d+$/.test(row[5])) {
+      const memberId = readColumn(row, columns.memberId);
+
+      if (!/^\d+$/.test(memberId)) {
         return;
       }
 
-      currentCard = row[1] || currentCard;
-      currentFamilyHead = row[2] || currentFamilyHead;
+      currentCard = readColumn(row, columns.card) || currentCard;
+      currentFamilyHead = readColumn(row, columns.familyHead) || currentFamilyHead;
 
       rows.push({
         Village: village.name,
         VillageId: village.id,
-        'S.No.': row[0],
+        'S.No.': readColumn(row, columns.serial),
         'Ration Card No.': currentCard,
         'Family Head': currentFamilyHead,
-        'M.S. No.': row[3],
-        'Member Name': row[4],
-        'Member ID': row[5],
-        "Member's Age": row[6],
-        'UID No.': row[7],
-        'Relation with HoF': row[8],
-        'Mother Name': row[10],
-        'Father Name': row[11],
-        Gender: row[12],
+        'M.S. No.': readColumn(row, columns.msNo),
+        'Member Name': readColumn(row, columns.memberName),
+        'Member ID': memberId,
+        "Member's Age": readColumn(row, columns.age),
+        'UID No.': readColumn(row, columns.uid),
+        'Relation with HoF': readColumn(row, columns.relation),
+        'Mother Name': readColumn(row, columns.mother),
+        'Father Name': readColumn(row, columns.father),
+        Gender: readColumn(row, columns.gender),
         Scheme: currentScheme || 'Unspecified',
         FPS: currentFps || 'Unspecified',
         'FPS Code': currentFpsCode,
@@ -168,6 +177,36 @@
     });
 
     return rows;
+  }
+
+  function getColumnIndexes(headerRow) {
+    return {
+      serial: findColumn(headerRow, ['S.No.']),
+      card: findColumn(headerRow, ['Ration Card No.']),
+      familyHead: findColumn(headerRow, ['Family Head']),
+      msNo: findColumn(headerRow, ['M.S. No.']),
+      memberName: findColumn(headerRow, ['Member Name(in Eng)', 'Member Name']),
+      memberId: findColumn(headerRow, ['Member ID']),
+      age: findColumn(headerRow, ["Member's Age*", "Member's Age"]),
+      uid: findColumn(headerRow, ['UID No.']),
+      relation: findColumn(headerRow, ['Relation with HoF']),
+      mother: findColumn(headerRow, ['Mother Name']),
+      father: findColumn(headerRow, ['Father Name']),
+      gender: findColumn(headerRow, ['Gender']),
+    };
+  }
+
+  function findColumn(headerRow, candidates) {
+    const normalizedCandidates = candidates.map(normalizeHeader);
+    return headerRow.findIndex((header) => normalizedCandidates.includes(normalizeHeader(header)));
+  }
+
+  function normalizeHeader(value) {
+    return String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+  }
+
+  function readColumn(row, index) {
+    return index >= 0 ? row[index] || '' : '';
   }
 
   function getVillageStats(rows) {
@@ -198,6 +237,10 @@
     });
 
     tableBody.addEventListener('click', handleCopyClick);
+    tableBody.addEventListener('mouseover', handleCopyCellEnter);
+    tableBody.addEventListener('focusin', handleCopyCellEnter);
+    tableBody.addEventListener('mouseout', handleCopyCellLeave);
+    copyButton.addEventListener('blur', hideCopyButton);
   }
 
   function renderVillageList() {
@@ -353,20 +396,59 @@
 
   function renderCopyCell(cell, value) {
     cell.className = 'copy-cell';
+    cell.dataset.copyValue = value;
 
     const valueText = document.createElement('span');
     valueText.className = 'copy-value';
     valueText.textContent = value;
 
-    const copyButton = document.createElement('button');
-    copyButton.type = 'button';
-    copyButton.className = 'copy-button';
+    cell.append(valueText);
+  }
+
+  function createCopyButton() {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'copy-button';
+    button.title = 'Copy ration card number';
+    button.textContent = 'Copy';
+    return button;
+  }
+
+  function handleCopyCellEnter(event) {
+    const cell = event.target.closest('.copy-cell');
+
+    if (!cell || !tableBody.contains(cell)) {
+      return;
+    }
+
+    showCopyButton(cell);
+  }
+
+  function handleCopyCellLeave(event) {
+    const cell = event.target.closest('.copy-cell');
+
+    if (!cell || cell.contains(event.relatedTarget)) {
+      return;
+    }
+
+    hideCopyButton();
+  }
+
+  function showCopyButton(cell) {
+    const value = cell.dataset.copyValue || '';
     copyButton.dataset.copyValue = value;
     copyButton.setAttribute('aria-label', `Copy ration card number ${value}`);
-    copyButton.title = 'Copy ration card number';
     copyButton.textContent = 'Copy';
+    copyButton.classList.remove('is-copied');
+    cell.appendChild(copyButton);
+  }
 
-    cell.append(valueText, copyButton);
+  function hideCopyButton() {
+    if (document.activeElement === copyButton) {
+      return;
+    }
+
+    copyButton.remove();
   }
 
   async function handleCopyClick(event) {
