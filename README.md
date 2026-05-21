@@ -1,13 +1,29 @@
-# FPS Beneficiary Details Web App
+# Village Wise FPS Beneficiary Details Web App
 
-A static web app that automatically loads and displays data from `FPSBeneficiaryDetailsbalapora.xlsx` in the browser using SheetJS.
+A static web app that loads FPS beneficiary details from Excel and presents them village wise. The current configured village is **Balapora**, loaded from `FPSBeneficiaryDetailsbalapora.xlsx`, and the app is structured so more village workbooks can be added later.
 
 ## Project files
 
-- `index.html` - page structure and script/style wiring
-- `style.css` - modern responsive styling
-- `script.js` - Excel loading, parsing, table rendering, and live search
+- `index.html` - village-wise dashboard structure and script/style wiring
+- `style.css` - responsive village dashboard styling
+- `script.js` - village configuration, Excel parsing, metrics, filters, and table rendering
 - `FPSBeneficiaryDetailsbalapora.xlsx` - source data file loaded on page open
+
+## Adding another village
+
+1. Add the new village Excel file to the project root.
+2. Open `script.js`.
+3. Add a new entry to `VILLAGE_SOURCES`:
+
+```js
+{
+  id: 'new-village',
+  name: 'New Village',
+  file: 'FPSBeneficiaryDetailsNewVillage.xlsx',
+}
+```
+
+The dashboard will add the village to the village selector and calculate its member, ration card, FPS, scheme, and gender counts automatically.
 
 ## Run locally
 
@@ -62,4 +78,4 @@ git commit -m "Update beneficiary details data"
 git push
 ```
 
-Cloudflare Pages auto-deploys after each push, and the app will load the updated Excel file automatically on next page load.
+Cloudflare Pages auto-deploys after each push, and the app will load the updated village file automatically on next page load.

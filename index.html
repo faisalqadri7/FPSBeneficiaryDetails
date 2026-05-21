@@ -3,46 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FPS Beneficiary Details</title>
+    <title>Village Wise FPS Beneficiary Details</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main class="app-shell">
-      <section class="card" aria-labelledby="page-title">
-        <header class="card-header">
-          <p class="eyebrow">Cloudflare Pages Ready</p>
-          <h1 id="page-title">FPS Beneficiary Details</h1>
-          <p class="subtitle">
-            Data is loaded automatically from
-            <code>FPSBeneficiaryDetailsbalapora.xlsx</code>
-          </p>
-        </header>
-
-        <div class="toolbar">
-          <label for="searchInput" class="sr-only">Search table rows</label>
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="Search any value..."
-            autocomplete="off"
-          />
-          <span id="rowCount" class="row-count" aria-live="polite"></span>
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">Fair Price Shop Beneficiary Register</p>
+          <h1>Village Wise Beneficiary Details</h1>
         </div>
-
-        <p id="statusMessage" class="status" aria-live="polite">Loading Excel file…</p>
-
-        <div class="table-wrap" role="region" aria-label="Beneficiary table" tabindex="0">
-          <table id="dataTable">
-            <thead></thead>
-            <tbody></tbody>
-          </table>
+        <div class="source-pill" aria-label="Data source">
+          <span>Source</span>
+          <strong>Excel workbook</strong>
         </div>
+      </header>
+
+      <section class="layout" aria-label="Village wise beneficiary dashboard">
+        <aside class="village-panel" aria-labelledby="village-title">
+          <div class="panel-heading">
+            <p class="eyebrow">Village</p>
+            <h2 id="village-title">Villages</h2>
+          </div>
+          <div id="villageList" class="village-list" role="list"></div>
+        </aside>
+
+        <section class="content-panel" aria-live="polite">
+          <div class="content-top">
+            <div>
+              <p class="eyebrow">Current Village</p>
+              <h2 id="activeVillageName">Balapora</h2>
+              <p id="activeVillageNote" class="muted">Loading village data...</p>
+            </div>
+            <span id="statusMessage" class="status">Loading Excel file...</span>
+          </div>
+
+          <div id="summaryGrid" class="summary-grid"></div>
+
+          <div class="filters" aria-label="Village filters">
+            <label class="field">
+              <span>Search</span>
+              <input
+                id="searchInput"
+                type="search"
+                placeholder="Ration card, member, UID, parent..."
+                autocomplete="off"
+              />
+            </label>
+
+            <label class="field compact">
+              <span>Scheme</span>
+              <select id="schemeFilter">
+                <option value="">All schemes</option>
+              </select>
+            </label>
+
+            <label class="field compact">
+              <span>FPS</span>
+              <select id="fpsFilter">
+                <option value="">All FPS</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="table-meta">
+            <strong id="rowCount">0 records</strong>
+            <span id="filterHint">Village wise records will appear below.</span>
+          </div>
+
+          <div class="table-wrap" role="region" aria-label="Village beneficiary table" tabindex="0">
+            <table id="dataTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
       </section>
     </main>
 
