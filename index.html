@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FPS Beneficiary Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="card" aria-labelledby="page-title">
+        <header class="card-header">
+          <p class="eyebrow">Cloudflare Pages Ready</p>
+          <h1 id="page-title">FPS Beneficiary Details</h1>
+          <p class="subtitle">
+            Data is loaded automatically from
+            <code>FPSBeneficiaryDetailsbalapora.xlsx</code>
+          </p>
+        </header>
+
+        <div class="toolbar">
+          <label for="searchInput" class="sr-only">Search table rows</label>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Search any value..."
+            autocomplete="off"
+          />
+          <span id="rowCount" class="row-count" aria-live="polite"></span>
+        </div>
+
+        <p id="statusMessage" class="status" aria-live="polite">Loading Excel file…</p>
+
+        <div class="table-wrap" role="region" aria-label="Beneficiary table" tabindex="0">
+          <table id="dataTable">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
