@@ -282,8 +282,8 @@ h2 {
     minmax(120px, 1fr)
     minmax(120px, 1fr)
     96px
-    minmax(128px, 0.85fr)
-    minmax(140px, 0.95fr)
+    minmax(136px, 0.9fr)
+    minmax(132px, 0.9fr)
     72px;
   align-items: end;
 }
