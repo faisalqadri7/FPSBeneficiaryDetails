@@ -36,7 +36,6 @@
   const table = document.getElementById('dataTable');
   const tableHead = table.querySelector('thead');
   const tableBody = table.querySelector('tbody');
-  const villageList = document.getElementById('villageList');
   const activeVillageName = document.getElementById('activeVillageName');
   const activeVillageNote = document.getElementById('activeVillageNote');
   const summaryGrid = document.getElementById('summaryGrid');
@@ -47,6 +46,7 @@
     memberName: document.getElementById('memberNameSearch'),
     uidLast4: document.getElementById('uidLast4Search'),
   };
+  const villageFilter = document.getElementById('villageFilter');
   const schemeFilter = document.getElementById('schemeFilter');
   const fpsFilter = document.getElementById('fpsFilter');
   const clearSearchButton = document.getElementById('clearSearchButton');
@@ -70,7 +70,7 @@
         return;
       }
 
-      renderVillageList();
+      renderVillageFilter();
       setActiveVillage(activeVillageId);
       showStatus('Village data loaded', false);
     } catch (error) {
@@ -242,6 +242,10 @@
       control.addEventListener('change', renderActiveVillage);
     });
 
+    villageFilter.addEventListener('change', () => {
+      setActiveVillage(villageFilter.value);
+    });
+
     clearSearchButton.addEventListener('click', () => {
       resetSearchFields();
       schemeFilter.value = '';
@@ -252,23 +256,14 @@
     tableBody.addEventListener('click', handleCopyClick);
   }
 
-  function renderVillageList() {
-    villageList.innerHTML = '';
+  function renderVillageFilter() {
+    villageFilter.innerHTML = '';
 
     villages.forEach((village) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'village-button';
-      button.dataset.villageId = village.id;
-      button.innerHTML = `
-        <span>
-          <strong>${escapeHtml(village.name)}</strong>
-          <small>${formatNumber(village.stats.cards)} ration cards</small>
-        </span>
-        <b>${formatNumber(village.stats.members)}</b>
-      `;
-      button.addEventListener('click', () => setActiveVillage(village.id));
-      villageList.appendChild(button);
+      const option = document.createElement('option');
+      option.value = village.id;
+      option.textContent = `${village.name} (${formatNumber(village.stats.members)})`;
+      villageFilter.appendChild(option);
     });
   }
 
@@ -285,10 +280,7 @@
     activeVillageNote.textContent = `${formatNumber(village.stats.members)} members across ${formatNumber(
       village.stats.cards
     )} ration cards`;
-
-    document.querySelectorAll('.village-button').forEach((button) => {
-      button.classList.toggle('is-active', button.dataset.villageId === villageId);
-    });
+    villageFilter.value = villageId;
 
     populateSelect(schemeFilter, village.rows, 'Scheme', 'All schemes');
     populateSelect(fpsFilter, village.rows, 'FPS', 'All FPS');
@@ -481,18 +473,18 @@
     }
 
     try {
-      await copyToClipboard(value);
-      showCopyState(button, 'Copied');
+      const result = await copyToClipboard(value, button);
+      showCopyState(button, result === 'copied' ? 'Copied' : 'Selected');
     } catch (error) {
       console.error(error);
-      showCopyState(button, 'Failed');
+      showCopyState(button, 'Selected');
     }
   }
 
-  async function copyToClipboard(value) {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(value);
-      return;
+  async function copyToClipboard(value, button) {
+    if (window.navigator?.clipboard?.writeText) {
+      await window.navigator.clipboard.writeText(value);
+      return 'copied';
     }
 
     const textArea = document.createElement('textarea');
@@ -506,8 +498,25 @@
     textArea.remove();
 
     if (!copied) {
-      throw new Error('Copy command was not accepted by the browser.');
+      selectCopyValue(button);
+      return 'selected';
     }
+
+    return 'copied';
+  }
+
+  function selectCopyValue(button) {
+    const valueElement = button.closest('.copy-cell')?.querySelector('.copy-value');
+
+    if (!valueElement || !window.getSelection || !document.createRange) {
+      return;
+    }
+
+    const range = document.createRange();
+    range.selectNodeContents(valueElement);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   function showCopyState(button, label) {

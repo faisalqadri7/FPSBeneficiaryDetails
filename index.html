@@ -46,14 +46,6 @@
       </header>
 
       <section class="layout" aria-label="Village wise beneficiary dashboard">
-        <aside class="village-panel" aria-labelledby="village-title">
-          <div class="panel-heading">
-            <p class="eyebrow">Village</p>
-            <h2 id="village-title">Villages</h2>
-          </div>
-          <div id="villageList" class="village-list" role="list"></div>
-        </aside>
-
         <section class="content-panel" aria-live="polite">
           <div class="content-top">
             <div>
@@ -103,6 +95,13 @@
                 placeholder="5296"
                 autocomplete="off"
               />
+            </label>
+
+            <label class="field compact">
+              <span>Village</span>
+              <select id="villageFilter">
+                <option value="">Loading...</option>
+              </select>
             </label>
 
             <label class="field compact">
