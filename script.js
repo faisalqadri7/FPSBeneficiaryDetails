@@ -40,9 +40,17 @@
   const activeVillageName = document.getElementById('activeVillageName');
   const activeVillageNote = document.getElementById('activeVillageNote');
   const summaryGrid = document.getElementById('summaryGrid');
-  const searchInput = document.getElementById('searchInput');
+  const searchInputs = {
+    serial: document.getElementById('serialSearch'),
+    rationCard: document.getElementById('rationCardSearch'),
+    familyHead: document.getElementById('familyHeadSearch'),
+    memberName: document.getElementById('memberNameSearch'),
+    age: document.getElementById('ageSearch'),
+    uidLast4: document.getElementById('uidLast4Search'),
+  };
   const schemeFilter = document.getElementById('schemeFilter');
   const fpsFilter = document.getElementById('fpsFilter');
+  const clearSearchButton = document.getElementById('clearSearchButton');
   const statusMessage = document.getElementById('statusMessage');
   const rowCount = document.getElementById('rowCount');
   const filterHint = document.getElementById('filterHint');
@@ -231,9 +239,16 @@
   }
 
   function bindFilters() {
-    [searchInput, schemeFilter, fpsFilter].forEach((control) => {
+    [...Object.values(searchInputs), schemeFilter, fpsFilter].forEach((control) => {
       control.addEventListener('input', renderActiveVillage);
       control.addEventListener('change', renderActiveVillage);
+    });
+
+    clearSearchButton.addEventListener('click', () => {
+      resetSearchFields();
+      schemeFilter.value = '';
+      fpsFilter.value = '';
+      renderActiveVillage();
     });
 
     tableBody.addEventListener('click', handleCopyClick);
@@ -271,7 +286,7 @@
       return;
     }
 
-    searchInput.value = '';
+    resetSearchFields();
     activeVillageName.textContent = village.name;
     activeVillageNote.textContent = `${formatNumber(village.stats.members)} members across ${formatNumber(
       village.stats.cards
@@ -345,7 +360,7 @@
   }
 
   function getFilteredRows(rows) {
-    const query = searchInput.value.trim().toLowerCase();
+    const filters = getSearchFilters();
     const scheme = schemeFilter.value;
     const fps = fpsFilter.value;
 
@@ -353,11 +368,55 @@
       const matchesScheme = !scheme || row.Scheme === scheme;
       const matchesFps = !fps || row.FPS === fps;
       const matchesSearch =
-        !query ||
-        TABLE_COLUMNS.some((column) => String(row[column] || '').toLowerCase().includes(query)) ||
-        String(row['FPS Code'] || '').toLowerCase().includes(query);
+        matchesColumn(row, 'S.No.', filters.serial) &&
+        matchesColumn(row, 'Ration Card No.', filters.rationCard) &&
+        matchesColumn(row, 'Family Head', filters.familyHead) &&
+        matchesColumn(row, 'Member Name', filters.memberName) &&
+        matchesColumn(row, "Member's Age", filters.age) &&
+        matchesUidLast4(row, filters.uidLast4);
 
       return matchesScheme && matchesFps && matchesSearch;
+    });
+  }
+
+  function getSearchFilters() {
+    return {
+      serial: normalizeSearch(searchInputs.serial.value),
+      rationCard: normalizeSearch(searchInputs.rationCard.value),
+      familyHead: normalizeSearch(searchInputs.familyHead.value),
+      memberName: normalizeSearch(searchInputs.memberName.value),
+      age: normalizeSearch(searchInputs.age.value),
+      uidLast4: onlyDigits(searchInputs.uidLast4.value).slice(-4),
+    };
+  }
+
+  function matchesColumn(row, column, query) {
+    return !query || normalizeSearch(row[column]).includes(query);
+  }
+
+  function matchesUidLast4(row, query) {
+    if (!query) {
+      return true;
+    }
+
+    return getLastFourDigits(row['UID No.']).includes(query);
+  }
+
+  function getLastFourDigits(value) {
+    return onlyDigits(value).slice(-4);
+  }
+
+  function normalizeSearch(value) {
+    return String(value || '').trim().toLowerCase();
+  }
+
+  function onlyDigits(value) {
+    return String(value || '').replace(/\D/g, '');
+  }
+
+  function resetSearchFields() {
+    Object.values(searchInputs).forEach((input) => {
+      input.value = '';
     });
   }
 

@@ -66,13 +66,46 @@
 
           <div id="summaryGrid" class="summary-grid"></div>
 
-          <div class="filters" aria-label="Village filters">
+          <div class="filters advanced-filters" aria-label="Advanced village filters">
+            <label class="field narrow">
+              <span>S.No.</span>
+              <input id="serialSearch" type="search" inputmode="numeric" placeholder="1" autocomplete="off" />
+            </label>
+
             <label class="field">
-              <span>Search</span>
+              <span>Ration Card No.</span>
               <input
-                id="searchInput"
+                id="rationCardSearch"
                 type="search"
-                placeholder="Ration card, member, UID, parent..."
+                inputmode="numeric"
+                placeholder="011001..."
+                autocomplete="off"
+              />
+            </label>
+
+            <label class="field">
+              <span>Family Head</span>
+              <input id="familyHeadSearch" type="search" placeholder="Family head" autocomplete="off" />
+            </label>
+
+            <label class="field">
+              <span>Member Name</span>
+              <input id="memberNameSearch" type="search" placeholder="Member name" autocomplete="off" />
+            </label>
+
+            <label class="field narrow">
+              <span>Age</span>
+              <input id="ageSearch" type="search" inputmode="numeric" placeholder="45" autocomplete="off" />
+            </label>
+
+            <label class="field narrow">
+              <span>UID Last 4</span>
+              <input
+                id="uidLast4Search"
+                type="search"
+                inputmode="numeric"
+                maxlength="4"
+                placeholder="5296"
                 autocomplete="off"
               />
             </label>
@@ -90,6 +123,8 @@
                 <option value="">All FPS</option>
               </select>
             </label>
+
+            <button id="clearSearchButton" class="clear-filters" type="button">Clear</button>
           </div>
 
           <div class="table-meta">

@@ -275,9 +275,18 @@ h2 {
   background: var(--surface);
 }
 
+.advanced-filters {
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  align-items: end;
+}
+
 .field {
   display: grid;
   gap: 7px;
+}
+
+.field.narrow input {
+  text-align: center;
 }
 
 .field input,
@@ -307,6 +316,27 @@ h2 {
 .field select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.15);
+}
+
+.clear-filters {
+  min-height: 42px;
+  width: fit-content;
+  min-width: 96px;
+  padding: 0 14px;
+  border: 1px solid rgba(245, 158, 11, 0.42);
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.1);
+  color: #fde68a;
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.clear-filters:hover,
+.clear-filters:focus {
+  border-color: var(--gold);
+  background: rgba(245, 158, 11, 0.18);
+  outline: none;
 }
 
 .table-meta {
@@ -445,6 +475,10 @@ tbody tr:hover {
 
   .filters {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .advanced-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
