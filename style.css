@@ -410,7 +410,7 @@ tbody tr:hover {
 }
 
 .copy-cell {
-  min-width: 150px;
+  min-width: 160px;
 }
 
 .copy-cell,
@@ -424,7 +424,7 @@ tbody tr:hover {
 
 .copy-value {
   display: inline-block;
-  padding-right: 58px;
+  padding-right: 62px;
 }
 
 .copy-button {
@@ -440,7 +440,7 @@ tbody tr:hover {
   cursor: pointer;
   font-size: 0.72rem;
   font-weight: 800;
-  opacity: 0;
+  opacity: 0.78;
   transform: translateY(-50%);
   transition: opacity 0.14s ease, background 0.14s ease, border-color 0.14s ease;
 }

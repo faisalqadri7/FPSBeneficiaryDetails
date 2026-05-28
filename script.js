@@ -53,7 +53,6 @@
   const statusMessage = document.getElementById('statusMessage');
   const rowCount = document.getElementById('rowCount');
   const filterHint = document.getElementById('filterHint');
-  const copyButton = createCopyButton();
 
   let villages = [];
   let activeVillageId = VILLAGE_SOURCES[0].id;
@@ -251,10 +250,6 @@
     });
 
     tableBody.addEventListener('click', handleCopyClick);
-    tableBody.addEventListener('mouseover', handleCopyCellEnter);
-    tableBody.addEventListener('focusin', handleCopyCellEnter);
-    tableBody.addEventListener('mouseout', handleCopyCellLeave);
-    copyButton.addEventListener('blur', hideCopyButton);
   }
 
   function renderVillageList() {
@@ -458,53 +453,19 @@
     valueText.className = 'copy-value';
     valueText.textContent = value;
 
-    cell.append(valueText);
+    const button = createCopyButton(value);
+    cell.append(valueText, button);
   }
 
-  function createCopyButton() {
+  function createCopyButton(value) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'copy-button';
+    button.dataset.copyValue = value;
+    button.setAttribute('aria-label', `Copy ration card number ${value}`);
     button.title = 'Copy ration card number';
     button.textContent = 'Copy';
     return button;
-  }
-
-  function handleCopyCellEnter(event) {
-    const cell = event.target.closest('.copy-cell');
-
-    if (!cell || !tableBody.contains(cell)) {
-      return;
-    }
-
-    showCopyButton(cell);
-  }
-
-  function handleCopyCellLeave(event) {
-    const cell = event.target.closest('.copy-cell');
-
-    if (!cell || cell.contains(event.relatedTarget)) {
-      return;
-    }
-
-    hideCopyButton();
-  }
-
-  function showCopyButton(cell) {
-    const value = cell.dataset.copyValue || '';
-    copyButton.dataset.copyValue = value;
-    copyButton.setAttribute('aria-label', `Copy ration card number ${value}`);
-    copyButton.textContent = 'Copy';
-    copyButton.classList.remove('is-copied');
-    cell.appendChild(copyButton);
-  }
-
-  function hideCopyButton() {
-    if (document.activeElement === copyButton) {
-      return;
-    }
-
-    copyButton.remove();
   }
 
   async function handleCopyClick(event) {
@@ -541,8 +502,12 @@
     textArea.style.left = '-9999px';
     document.body.appendChild(textArea);
     textArea.select();
-    document.execCommand('copy');
+    const copied = document.execCommand('copy');
     textArea.remove();
+
+    if (!copied) {
+      throw new Error('Copy command was not accepted by the browser.');
+    }
   }
 
   function showCopyState(button, label) {
