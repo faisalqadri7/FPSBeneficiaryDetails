@@ -270,13 +270,21 @@ h2 {
 .filters {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) minmax(150px, 210px) minmax(190px, 260px);
-  gap: 12px;
+  gap: 10px;
   padding: 16px 20px 12px;
   background: var(--surface);
 }
 
 .advanced-filters {
-  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  grid-template-columns:
+    70px
+    minmax(130px, 1.15fr)
+    minmax(120px, 1fr)
+    minmax(120px, 1fr)
+    96px
+    minmax(128px, 0.85fr)
+    minmax(140px, 0.95fr)
+    72px;
   align-items: end;
 }
 
@@ -301,11 +309,11 @@ h2 {
 }
 
 .field input {
-  padding: 0 12px;
+  padding: 0 10px;
 }
 
 .field select {
-  padding: 0 34px 0 12px;
+  padding: 0 30px 0 10px;
 }
 
 .field input::placeholder {
@@ -320,9 +328,9 @@ h2 {
 
 .clear-filters {
   min-height: 42px;
-  width: fit-content;
-  min-width: 96px;
-  padding: 0 14px;
+  width: 100%;
+  min-width: 0;
+  padding: 0 10px;
   border: 1px solid rgba(245, 158, 11, 0.42);
   border-radius: 8px;
   background: rgba(245, 158, 11, 0.1);

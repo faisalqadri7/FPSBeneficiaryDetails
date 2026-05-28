@@ -45,7 +45,6 @@
     rationCard: document.getElementById('rationCardSearch'),
     familyHead: document.getElementById('familyHeadSearch'),
     memberName: document.getElementById('memberNameSearch'),
-    age: document.getElementById('ageSearch'),
     uidLast4: document.getElementById('uidLast4Search'),
   };
   const schemeFilter = document.getElementById('schemeFilter');
@@ -372,7 +371,6 @@
         matchesColumn(row, 'Ration Card No.', filters.rationCard) &&
         matchesColumn(row, 'Family Head', filters.familyHead) &&
         matchesColumn(row, 'Member Name', filters.memberName) &&
-        matchesColumn(row, "Member's Age", filters.age) &&
         matchesUidLast4(row, filters.uidLast4);
 
       return matchesScheme && matchesFps && matchesSearch;
@@ -385,7 +383,6 @@
       rationCard: normalizeSearch(searchInputs.rationCard.value),
       familyHead: normalizeSearch(searchInputs.familyHead.value),
       memberName: normalizeSearch(searchInputs.memberName.value),
-      age: normalizeSearch(searchInputs.age.value),
       uidLast4: onlyDigits(searchInputs.uidLast4.value).slice(-4),
     };
   }
